@@ -1,3 +1,4 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +17,7 @@ public partial class PlayerInputSystem : SystemBase
         {
             playerMapActions.Move.performed -= OnMovePerformed;
             playerMapActions.Move.canceled -= OnMoveCanceled;
+            playerMapActions.Jump.performed -= OnJumpPerformed;
         }
 
         playerMapActions = _playerMapActions;
@@ -23,6 +25,15 @@ public partial class PlayerInputSystem : SystemBase
 
         playerMapActions.Move.performed += OnMovePerformed;
         playerMapActions.Move.canceled += OnMoveCanceled;
+
+        playerMapActions.Jump.performed += OnJumpPerformed;
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        Entity player = SystemAPI.GetSingletonEntity<PlayerComponentData>();
+        var playerMovementData = SystemAPI.GetComponentRW<PlayerMovementComponentData>(player);
+        playerMovementData.ValueRW.IsJump = true;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -66,5 +77,6 @@ public partial class PlayerInputSystem : SystemBase
 
         playerMapActions.Move.performed -= OnMovePerformed;
         playerMapActions.Move.canceled -= OnMoveCanceled;
+        playerMapActions.Jump.performed -= OnJumpPerformed;
     }
 }

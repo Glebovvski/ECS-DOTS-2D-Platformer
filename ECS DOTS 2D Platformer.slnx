@@ -24,6 +24,7 @@
   <Project Path="Unity.Entities.Editor.csproj" />
   <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="Unity.InternalAPIEngineBridge.002.csproj" />
+  <Project Path="Unity.Physics.Custom.Editor.csproj" />
   <Project Path="Unity.2D.SpriteShape.Runtime.csproj" />
   <Project Path="Unity.VisualScripting.Core.csproj" />
   <Project Path="Unity.VisualScripting.State.Editor.csproj" />
@@ -51,6 +52,7 @@
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.Entities.CodeGen.csproj" />
   <Project Path="Unity.Entities.Editor.Properties.csproj" />
+  <Project Path="Unity.Physics.Custom.csproj" />
   <Project Path="Unity.Physics.Editor.csproj" />
   <Project Path="Unity.Numerics.Linear.Solvers.Lowlevel.csproj" />
   <Project Path="Unity.InputSystem.ForUI.csproj" />

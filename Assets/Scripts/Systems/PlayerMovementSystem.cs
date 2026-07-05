@@ -1,6 +1,9 @@
+using System;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -20,7 +23,6 @@ public partial struct PlayerMovementSystem : ISystem
     {
         new PlayerMovementJob()
         {
-            DeltaTime = SystemAPI.Time.DeltaTime,
             Ecb = GetEntityCommandBuffer(ref state)
         }.Schedule();
     }
@@ -36,22 +38,45 @@ public partial struct PlayerMovementSystem : ISystem
 [BurstCompile]
 public partial struct PlayerMovementJob : IJobEntity
 {
-    public float DeltaTime;
     public EntityCommandBuffer Ecb;
 
     [BurstCompile]
-    public void Execute(in Entity player, in LocalTransform localTransform, in PlayerMovementComponentData playerMovementData, in PlayerComponentData playerData)
+    public void Execute(in Entity player, ref PhysicsVelocity playerVelocity, in PhysicsMass playerMass, in LocalTransform playerTransform, ref PlayerMovementComponentData playerMovementData, in PlayerComponentData playerData)
     {
-        if (playerMovementData.MoveDirection == 0f)
+        if (playerMovementData.IsGrounded == false)
+            return;
+        if (playerMovementData.IsJump)
         {
-            Debug.LogError("MoveDirection is 0, skipping movement");
+            HandleJump(ref playerVelocity, playerMass, playerData, ref playerMovementData);
             return;
         }
-        float3 playerCurrentPos = localTransform.Position;
-        float3 newPlayerPosition = playerCurrentPos + new float3(playerMovementData.MoveDirection, 0f, 0f) * DeltaTime * playerData.Speed;
-        quaternion newPlayerRotation = playerMovementData.MoveDirection > 0f ? new quaternion(0, 0, 0, 1) : new quaternion(0, 1, 0, 0);
-        Ecb.SetComponent(player, new LocalTransform { Position = newPlayerPosition, Rotation = newPlayerRotation, Scale = localTransform.Scale });
+
+        if (playerMovementData.MoveDirection == 0f)
+            return;
+
+        SetPlayerRotation(player, playerTransform, playerMovementData);
+        HandlePlayerMovement(player, playerVelocity, playerMovementData, playerData);
     }
 
+    [BurstCompile]
+    private void HandleJump(ref PhysicsVelocity playerVelocity, PhysicsMass playerMass, PlayerComponentData playerData, ref PlayerMovementComponentData playerMovementData)
+    {
+        playerVelocity.ApplyLinearImpulse(playerMass, new float3(0f, playerData.JumpForce, 0f));
+        playerMovementData.IsJump = false;
+    }
+
+    [BurstCompile]
+    private void SetPlayerRotation(Entity player, LocalTransform playerTransform, PlayerMovementComponentData data)
+    {
+        quaternion newPlayerRotation = data.MoveDirection > 0f ? new quaternion(0, 0, 0, 1) : new quaternion(0, 1, 0, 0);
+        Ecb.SetComponent(player, new LocalTransform { Position = playerTransform.Position, Rotation = newPlayerRotation, Scale = playerTransform.Scale });
+    }
+
+    [BurstCompile]
+    private void HandlePlayerMovement(Entity player, PhysicsVelocity playerVelocity, PlayerMovementComponentData movementData, PlayerComponentData playerData)
+    {
+        float3 linearVelocity = new float3(movementData.MoveDirection * playerData.Speed, playerVelocity.Linear.y, playerVelocity.Linear.z);
+        Ecb.SetComponent(player, new PhysicsVelocity { Linear = linearVelocity });
+    }
 
 }
