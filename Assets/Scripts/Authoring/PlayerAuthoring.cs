@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class PlayerAuthoring : MonoBehaviour
 {
+    [SerializeField] private GameObject playerVisualisation;
     [SerializeField] private float speed = 5f;
     [SerializeField] private float jumpForce = 5f;
+
+    public GameObject PlayerVisualisation => playerVisualisation;
     public float Speed => speed;
     public float JumpForce => jumpForce;
 }
@@ -24,6 +27,10 @@ public class Baker : Baker<PlayerAuthoring>
             MoveDirection = 0,
             IsJump = false,
             IsGrounded = true
+        });
+        AddComponentObject(entity, new PlayerManagedComponentData()
+        {
+            PlayerVisualisation = authoring.PlayerVisualisation
         });
     }
 }
