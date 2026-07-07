@@ -9,29 +9,29 @@ public partial struct PlayerAnimationCleanupSystem : ISystem
 
     public void OnCreate(ref SystemState state)
     {
-        playerQuery = SystemAPI.QueryBuilder()
-            .WithAll<PlayerAnimationComponentData>()
-            .WithNone<PlayerComponentData, LocalTransform>()
-            .Build();
+        //playerQuery = SystemAPI.QueryBuilder()
+        //    .WithAll<PlayerAnimationComponentData>()
+        //    .WithNone<PlayerComponentData, LocalTransform>()
+        //    .Build();
 
-        state.RequireForUpdate(playerQuery);
+        //state.RequireForUpdate(playerQuery);
     }
 
     public void OnUpdate(ref SystemState state)
     {
-        foreach ((RefRO<PlayerAnimationComponentData> animationData, Entity entity)
-                 in SystemAPI.Query<RefRO<PlayerAnimationComponentData>>()
+        foreach ((RefRO<PlayerManagedComponentData> managedData, Entity entity)
+                 in SystemAPI.Query<RefRO<PlayerManagedComponentData>>()
                      .WithNone<PlayerComponentData, LocalTransform>()
                      .WithEntityAccess())
         {
-            Animator animator = animationData.ValueRO.Animator.Value;
+            var go = managedData.ValueRO.GameObject;
 
-            if (animator != null)
+            if (go != null)
             {
-                Object.Destroy(animator.gameObject);
+                Object.Destroy(go);
             }
 
-            state.EntityManager.RemoveComponent<PlayerAnimationComponentData>(entity);
+            state.EntityManager.RemoveComponent<PlayerManagedComponentData>(entity);
         }
     }
 }

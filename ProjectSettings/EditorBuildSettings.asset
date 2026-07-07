@@ -11,4 +11,3 @@ EditorBuildSettings:
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: edd9468747ba4db45b9e44bc575384d6, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 26ab8707aacfa1245a3b0b3ff5d854d5, type: 3}
-  m_UseUCBPForAssetBundles: 0

@@ -13,7 +13,7 @@ public partial struct PlayerAnimationSystem : ISystem
         playerQuery = SystemAPI.QueryBuilder()
             .WithAll<LocalTransform>()
             .WithAll<PlayerMovementComponentData>()
-            .WithAll<PlayerAnimationComponentData>()
+            .WithAll<PlayerManagedComponentData>()
             .Build();
 
         state.RequireForUpdate(playerQuery);
@@ -21,8 +21,6 @@ public partial struct PlayerAnimationSystem : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
-        // Required because this system reads LocalTransform on main thread
-        // while physics may have scheduled transform-writing jobs.
         state.Dependency.Complete();
 
         if (playerQuery.CalculateEntityCount() != 1)
@@ -36,8 +34,8 @@ public partial struct PlayerAnimationSystem : ISystem
         LocalTransform localTransform =
             state.EntityManager.GetComponentData<LocalTransform>(playerEntity);
 
-        PlayerAnimationComponentData playerAnimationData =
-            state.EntityManager.GetComponentData<PlayerAnimationComponentData>(playerEntity);
+        PlayerManagedComponentData playerAnimationData =
+            state.EntityManager.GetComponentData<PlayerManagedComponentData>(playerEntity);
 
         Animator animator = playerAnimationData.Animator.Value;
 

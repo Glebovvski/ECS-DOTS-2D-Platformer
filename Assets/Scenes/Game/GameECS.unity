@@ -973,7 +973,7 @@ GameObject:
   m_IsActive: 1
 --- !u!212 &1561721906
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1030,6 +1030,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!4 &1561721907
 Transform:
   m_ObjectHideFlags: 0
@@ -1293,6 +1294,10 @@ PrefabInstance:
     - target: {fileID: 1691590656248876470, guid: c7c7bb44e6cadda4e9b944fdf775b178, type: 3}
       propertyPath: m_Name
       value: PlayerView
+      objectReference: {fileID: 0}
+    - target: {fileID: 4453073004894387000, guid: c7c7bb44e6cadda4e9b944fdf775b178, type: 3}
+      propertyPath: jumpForce
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 8570417678738205559, guid: c7c7bb44e6cadda4e9b944fdf775b178, type: 3}
       propertyPath: m_Name

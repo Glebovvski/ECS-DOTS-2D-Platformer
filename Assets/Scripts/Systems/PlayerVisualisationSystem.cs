@@ -11,7 +11,7 @@ partial struct PlayerVisualisationSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        playerQuery = SystemAPI.QueryBuilder().WithAll<PlayerManagedComponentData>().WithNone<PlayerAnimationComponentData>().Build();
+        playerQuery = SystemAPI.QueryBuilder().WithAll<PlayerVisualizationComponentData>().WithNone<PlayerManagedComponentData>().Build();
         state.RequireForUpdate(playerQuery);
         state.RequireForUpdate<EndSimulationEntityCommandBufferSystem.Singleton>();
     }
@@ -20,14 +20,16 @@ partial struct PlayerVisualisationSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var entity = playerQuery.GetSingletonEntity();
-        var playerVisualisation = playerQuery.GetSingleton<PlayerManagedComponentData>();
+        var playerVisualisation = playerQuery.GetSingleton<PlayerVisualizationComponentData>();
 
         var playerVisualisationGO = Object.Instantiate(playerVisualisation.PlayerVisualisation);
         // if (playerVisualisationGO.TryGetComponent<Animator>(out var animator))
         {
             var ecb = GetEntityCommandBuffer(ref state);
-            ecb.AddComponent(entity, new PlayerAnimationComponentData()
+            ecb.AddComponent(entity, new PlayerManagedComponentData()
             {
+                Transform = playerVisualisationGO.transform,
+                GameObject = playerVisualisationGO,
                 Animator = playerVisualisationGO.GetComponent<Animator>()
             });
         }

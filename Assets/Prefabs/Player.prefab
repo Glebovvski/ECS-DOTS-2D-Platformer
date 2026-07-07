@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -90,6 +90,7 @@ MonoBehaviour:
     x: Infinity
     y: Infinity
     z: Infinity
+  m_SolverType: 0
   m_WorldIndex: 0
   m_CustomTags:
     Tag00: 0
@@ -120,8 +121,8 @@ MonoBehaviour:
     y: 0.41
     z: 0
   m_PrimitiveSize:
-    x: 2.42
-    y: 5.6530566
+    x: 4.9627137
+    y: 13.522857
     z: 0
   m_PrimitiveOrientation:
     Value:
@@ -130,19 +131,19 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 5.6530566
-    Radius: 1.21
+    Height: 13.522857
+    Radius: 2.4813569
     Axis: 1
   m_Cylinder:
-    Height: 5.6530566
-    Radius: 1.21
+    Height: 13.522857
+    Radius: 2.4813569
     Axis: 1
   m_CylinderSideCount: 20
-  m_SphereRadius: 2.8265283
+  m_SphereRadius: 6.7614284
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
-    m_BevelRadius: 0.18
+    m_BevelRadius: 0
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
   m_ForceUnique: 1

@@ -28,7 +28,7 @@ public class Baker : Baker<PlayerAuthoring>
             IsJump = false,
             IsGrounded = true
         });
-        AddComponentObject(entity, new PlayerManagedComponentData()
+        AddComponentObject(entity, new PlayerVisualizationComponentData()
         {
             PlayerVisualisation = authoring.PlayerVisualisation
         });

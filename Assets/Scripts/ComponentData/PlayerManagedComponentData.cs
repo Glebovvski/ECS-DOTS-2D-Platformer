@@ -1,7 +1,9 @@
 using Unity.Entities;
 using UnityEngine;
 
-public class PlayerManagedComponentData : IComponentData
+public struct PlayerManagedComponentData : ICleanupComponentData
 {
-    public GameObject PlayerVisualisation;
+    public UnityObjectRef<Animator> Animator;
+    public UnityObjectRef<GameObject> GameObject;
+    public UnityObjectRef<Transform> Transform;
 }
