@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8570417678738205559
+--- !u!1 &5510520516748789235
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,62 +8,105 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 497087243581998650}
-  - component: {fileID: 4453073004894387000}
-  - component: {fileID: 7479082502271639710}
-  - component: {fileID: 9106374339313135398}
+  - component: {fileID: 1800856116055067924}
+  - component: {fileID: 2854073793724158499}
+  - component: {fileID: 1931102660122000387}
+  - component: {fileID: 3144724844730805960}
+  - component: {fileID: 5298544352565041426}
   m_Layer: 0
-  m_Name: Player
+  m_Name: DeadZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &497087243581998650
+--- !u!4 &1800856116055067924
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570417678738205559}
+  m_GameObject: {fileID: 5510520516748789235}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4453073004894387000
-MonoBehaviour:
+--- !u!33 &2854073793724158499
+MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570417678738205559}
+  m_GameObject: {fileID: 5510520516748789235}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1931102660122000387
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5510520516748789235}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 346df14243218b34d861e6662753b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAuthoring
-  playerVisualisation: {fileID: 3539360596530190632, guid: 6e521cc62f7b0274e8a2a688dc0f1122, type: 3}
-  speed: 7
-  jumpForce: 85
---- !u!114 &7479082502271639710
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 882b73bf443e4d84da9c0ff01167d521, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3144724844730805960
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570417678738205559}
+  m_GameObject: {fileID: 5510520516748789235}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ccea9ea98e38942e0b0938c27ed1903e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Physics.Custom::Unity.Physics.Authoring.PhysicsBodyAuthoring
-  m_MotionType: 0
+  m_MotionType: 2
   m_Smoothing: 0
-  m_Mass: 10
+  m_Mass: 1
   m_LinearDamping: 0.01
   m_AngularDamping: 0.05
   m_InitialLinearVelocity:
@@ -75,7 +118,7 @@ MonoBehaviour:
     y: 0
     z: 0
   m_GravityFactor: 1
-  m_OverrideDefaultMassDistribution: 1
+  m_OverrideDefaultMassDistribution: 0
   m_CenterOfMass:
     x: 0
     y: 0
@@ -87,9 +130,9 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_InertiaTensor:
-    x: Infinity
-    y: Infinity
-    z: Infinity
+    x: 0.4
+    y: 0.4
+    z: 0.4
   m_SolverType: 0
   m_WorldIndex: 0
   m_CustomTags:
@@ -101,52 +144,52 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &9106374339313135398
+--- !u!114 &5298544352565041426
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8570417678738205559}
+  m_GameObject: {fileID: 5510520516748789235}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Physics.Custom::Unity.Physics.Authoring.PhysicsShapeAuthoring
-  m_ForceUniqueID: 1122256217
+  m_ForceUniqueID: 291448698
   m_PrefabInstanceID: 0
   m_ShapeType: 0
   m_PrimitiveCenter:
     x: 0
-    y: 0.41
+    y: 0
     z: 0
   m_PrimitiveSize:
-    x: 4.9627137
-    y: 13.522857
-    z: 0
+    x: 1
+    y: 1
+    z: 1
   m_PrimitiveOrientation:
     Value:
-      x: 0
+      x: -0
       y: 0
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 13.522857
-    Radius: 2.4813569
+    Height: 1
+    Radius: 0.5
     Axis: 1
   m_Cylinder:
-    Height: 13.522857
-    Radius: 2.4813569
-    Axis: 1
+    Height: 1
+    Radius: 0.5
+    Axis: 2
   m_CylinderSideCount: 20
-  m_SphereRadius: 6.7614284
+  m_SphereRadius: 0.5
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
     m_SimplificationTolerance: 0.015
-    m_BevelRadius: 0
+    m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
-  m_ForceUnique: 1
+  m_ForceUnique: 0
   m_Material:
     m_SupportsTemplate: 1
     m_Template: {fileID: 0}
@@ -161,7 +204,7 @@ MonoBehaviour:
       m_Override: 0
       m_Value:
         Value: 0.5
-        CombineMode: 2
+        CombineMode: 0
     m_Restitution:
       m_Override: 0
       m_Value:
@@ -170,9 +213,9 @@ MonoBehaviour:
     m_BelongsToCategories:
       m_Override: 0
       m_Value:
-        Category00: 1
+        Category00: 0
         Category01: 0
-        Category02: 0
+        Category02: 1
         Category03: 0
         Category04: 0
         Category05: 0
@@ -205,9 +248,9 @@ MonoBehaviour:
     m_CollidesWithCategories:
       m_Override: 0
       m_Value:
-        Category00: 0
-        Category01: 1
-        Category02: 1
+        Category00: 1
+        Category01: 0
+        Category02: 0
         Category03: 0
         Category04: 0
         Category05: 0

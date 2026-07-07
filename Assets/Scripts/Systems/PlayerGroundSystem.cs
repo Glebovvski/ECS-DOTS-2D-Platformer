@@ -11,6 +11,8 @@ using UnityEngine;
 public partial struct PlayerGroundSystem : ISystem, ISystemStartStop
 {
     private float3 overlapDetectionOffset;
+    private CollisionFilter deadZoneCollisionFilter;
+    private CollisionFilter groundCollisionFilter;
 
     [BurstCompile]
     private void OnCreate(ref SystemState state)
@@ -26,7 +28,9 @@ public partial struct PlayerGroundSystem : ISystem, ISystemStartStop
         new PlayerGroundJob()
         {
             CollisionWorld = collisionWorld,
-            OverlapDetectionOffset = overlapDetectionOffset
+            OverlapDetectionOffset = overlapDetectionOffset,
+            DeadZoneCollisionFilter = deadZoneCollisionFilter,
+            GroundCollisionFilter = groundCollisionFilter
         }.Schedule();
     }
 
@@ -39,7 +43,10 @@ public partial struct PlayerGroundSystem : ISystem, ISystemStartStop
     public void OnStartRunning(ref SystemState state)
     {
         Entity entity = SystemAPI.GetSingletonEntity<PlayerGroundComponentData>();
-        overlapDetectionOffset = SystemAPI.GetComponentRO<PlayerGroundComponentData>(entity).ValueRO.OverlapDetectionOffset;
+        var playerGroundData = SystemAPI.GetComponentRO<PlayerGroundComponentData>(entity).ValueRO;
+        overlapDetectionOffset = playerGroundData.OverlapDetectionOffset;
+        deadZoneCollisionFilter = playerGroundData.DeadZoneCollisionFilter;
+        groundCollisionFilter = playerGroundData.GroundCollisionFilter;
     }
 
     [BurstCompile]
@@ -54,15 +61,26 @@ public partial struct PlayerGroundJob : IJobEntity
     [ReadOnly] public CollisionWorld CollisionWorld;
     [ReadOnly] public float3 OverlapDetectionOffset;
 
+    public CollisionFilter DeadZoneCollisionFilter;
+    public CollisionFilter GroundCollisionFilter;
+
     [BurstCompile]
-    public unsafe void Execute(ref PlayerMovementComponentData movementData, in PhysicsCollider physicsCollider, in LocalTransform playerTransform)
+    public unsafe void Execute(ref PlayerMovementComponentData movementData, ref PlayerComponentData playerComponentData, in PhysicsCollider physicsCollider, in LocalTransform playerTransform)
     {
         NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.TempJob);
 
         var boxCollider = (Unity.Physics.BoxCollider*)physicsCollider.ColliderPtr;
         var boxGeometry = boxCollider->Geometry;
 
-        bool isGrounded = CollisionWorld.OverlapBox(playerTransform.Position + OverlapDetectionOffset, new quaternion(0, 0, 0, 1), boxGeometry.Size / 2f, ref hits, boxCollider->GetCollisionFilter());
+        bool isDead = OverlapBox(playerTransform, boxGeometry, ref hits, DeadZoneCollisionFilter);
+        playerComponentData.IsDead = isDead;
+        if(isDead)
+        {
+            Debug.LogError("DEAD");
+            hits.Dispose();
+            return;
+        }
+        bool isGrounded = OverlapBox(playerTransform, boxGeometry, ref hits, GroundCollisionFilter);
         movementData.IsGrounded = isGrounded;
 
         foreach (var hit in hits)
@@ -74,5 +92,11 @@ public partial struct PlayerGroundJob : IJobEntity
         }
 
         hits.Dispose();
+    }
+
+    [BurstCompile]
+    public bool OverlapBox(LocalTransform playerTransform, BoxGeometry boxGeometry, ref NativeList<DistanceHit> hits, CollisionFilter collisionFilter)
+    {
+        return CollisionWorld.OverlapBox(playerTransform.Position + OverlapDetectionOffset, new quaternion(0, 0, 0, 1), boxGeometry.Size / 2f, ref hits, collisionFilter);
     }
 }
