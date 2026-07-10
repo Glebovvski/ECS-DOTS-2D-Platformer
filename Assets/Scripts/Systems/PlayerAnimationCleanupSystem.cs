@@ -1,3 +1,4 @@
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -30,8 +31,17 @@ public partial struct PlayerAnimationCleanupSystem : ISystem
             {
                 Object.Destroy(go);
             }
-
-            state.EntityManager.RemoveComponent<PlayerManagedComponentData>(entity);
+            var ecb = GetEntityCommandBuffer(ref state);
+            ecb.RemoveComponent<PlayerManagedComponentData>(entity);
+            //state.EntityManager.RemoveComponent<PlayerManagedComponentData>(entity);
         }
+    }
+
+
+    [BurstCompile]
+    private EntityCommandBuffer GetEntityCommandBuffer(ref SystemState state)
+    {
+        var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+        return ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
     }
 }

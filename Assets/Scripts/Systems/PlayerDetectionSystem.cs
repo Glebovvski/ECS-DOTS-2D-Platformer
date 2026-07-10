@@ -8,29 +8,41 @@ using UnityEngine;
 
 [BurstCompile]
 [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-public partial struct PlayerGroundSystem : ISystem, ISystemStartStop
+public partial struct PlayerDetectionSystem : ISystem, ISystemStartStop
 {
     private float3 overlapDetectionOffset;
     private CollisionFilter deadZoneCollisionFilter;
+    private CollisionFilter endFlagCollisionFilter;
     private CollisionFilter groundCollisionFilter;
 
     [BurstCompile]
     private void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<PlayerGroundComponentData>();
+        state.RequireForUpdate<PlayerDetectionComponentData>();
         state.RequireForUpdate<PhysicsWorldSingleton>();
+        state.RequireForUpdate<PlayerComponentData>();
+        state.RequireForUpdate<EndSimulationEntityCommandBufferSystem.Singleton>();
     }
 
     [BurstCompile]
     private void OnUpdate(ref SystemState state)
     {
+        var playerComponentData = SystemAPI.GetSingleton<PlayerComponentData>();
+        if (playerComponentData.IsDead)
+            return;
+
+        if (SystemAPI.HasSingleton<NextLevelComponentData>())
+            return;
+
         CollisionWorld collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
-        new PlayerGroundJob()
+        new PlayerDetectionJob()
         {
             CollisionWorld = collisionWorld,
+            Ecb = GetEntityCommandBuffer(ref state),
             OverlapDetectionOffset = overlapDetectionOffset,
             DeadZoneCollisionFilter = deadZoneCollisionFilter,
-            GroundCollisionFilter = groundCollisionFilter
+            GroundCollisionFilter = groundCollisionFilter,
+            EndFlagCollisionFilter = endFlagCollisionFilter
         }.Schedule();
     }
 
@@ -42,56 +54,67 @@ public partial struct PlayerGroundSystem : ISystem, ISystemStartStop
     [BurstCompile]
     public void OnStartRunning(ref SystemState state)
     {
-        Entity entity = SystemAPI.GetSingletonEntity<PlayerGroundComponentData>();
-        var playerGroundData = SystemAPI.GetComponentRO<PlayerGroundComponentData>(entity).ValueRO;
+        Entity entity = SystemAPI.GetSingletonEntity<PlayerDetectionComponentData>();
+        var playerGroundData = SystemAPI.GetComponentRO<PlayerDetectionComponentData>(entity).ValueRO;
         overlapDetectionOffset = playerGroundData.OverlapDetectionOffset;
         deadZoneCollisionFilter = playerGroundData.DeadZoneCollisionFilter;
         groundCollisionFilter = playerGroundData.GroundCollisionFilter;
+        endFlagCollisionFilter = playerGroundData.EndFlagCollisionFilter;
     }
 
     [BurstCompile]
     public void OnStopRunning(ref SystemState state)
     {
     }
+
+    [BurstCompile]
+    private EntityCommandBuffer GetEntityCommandBuffer(ref SystemState state)
+    {
+        var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+        return ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+    }
 }
 
 [BurstCompile]
-public partial struct PlayerGroundJob : IJobEntity
+public partial struct PlayerDetectionJob : IJobEntity
 {
     [ReadOnly] public CollisionWorld CollisionWorld;
     [ReadOnly] public float3 OverlapDetectionOffset;
 
+    public EntityCommandBuffer Ecb;
     public CollisionFilter DeadZoneCollisionFilter;
     public CollisionFilter GroundCollisionFilter;
+    public CollisionFilter EndFlagCollisionFilter;
 
     [BurstCompile]
     public unsafe void Execute(ref PlayerMovementComponentData movementData, ref PlayerComponentData playerComponentData, in PhysicsCollider physicsCollider, in LocalTransform playerTransform)
     {
-        NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.TempJob);
 
         var boxCollider = (Unity.Physics.BoxCollider*)physicsCollider.ColliderPtr;
         var boxGeometry = boxCollider->Geometry;
 
-        bool isDead = OverlapBox(playerTransform, boxGeometry, ref hits, DeadZoneCollisionFilter);
+        bool isDead = CheckBox(playerTransform, boxGeometry, DeadZoneCollisionFilter);
         playerComponentData.IsDead = isDead;
-        if(isDead)
-        {
-            Debug.LogError("DEAD");
-            hits.Dispose();
+        if (isDead)
             return;
-        }
-        bool isGrounded = OverlapBox(playerTransform, boxGeometry, ref hits, GroundCollisionFilter);
+
+        bool isGrounded = CheckBox(playerTransform, boxGeometry, GroundCollisionFilter);
         movementData.IsGrounded = isGrounded;
 
-        foreach (var hit in hits)
-        {
-            if (hit.Entity != Entity.Null)
-            {
-                Debug.DrawLine(playerTransform.Position, hit.Position, Color.red, 10f);
-            }
-        }
+
+        NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.TempJob);
+
+        bool isEndFlag = OverlapBox(playerTransform, boxGeometry, ref hits, EndFlagCollisionFilter);
+        if (isEndFlag)
+            Ecb.AddComponent(hits[0].Entity, new NextLevelComponentData());
 
         hits.Dispose();
+    }
+
+    [BurstCompile]
+    public bool CheckBox(LocalTransform playerTransform, BoxGeometry boxGeometry, CollisionFilter collisionFilter)
+    {
+        return CollisionWorld.CheckBox(playerTransform.Position + OverlapDetectionOffset, new quaternion(0, 0, 0, 1), boxGeometry.Size / 2f, collisionFilter);
     }
 
     [BurstCompile]
