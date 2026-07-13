@@ -26,7 +26,6 @@ public partial class PlayerCameraSystem : SystemBase
             return;
 
         var playerTransform = playerQuery.GetSingleton<PlayerManagedComponentData>();
-        cinemachineCamera.transform.position = new Vector3(playerTransform.Transform.Value.position.x, playerTransform.Transform.Value.position.y, cinemachineCamera.transform.position.z);
         cinemachineCamera.Follow = playerTransform.Transform;
     }
 
