@@ -4,20 +4,8 @@ using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-public partial struct PlayerAnimationCleanupSystem : ISystem
+public partial struct PlayerManagedCleanupSystem : ISystem
 {
-    private EntityQuery playerQuery;
-
-    public void OnCreate(ref SystemState state)
-    {
-        //playerQuery = SystemAPI.QueryBuilder()
-        //    .WithAll<PlayerAnimationComponentData>()
-        //    .WithNone<PlayerComponentData, LocalTransform>()
-        //    .Build();
-
-        //state.RequireForUpdate(playerQuery);
-    }
-
     public void OnUpdate(ref SystemState state)
     {
         foreach ((RefRO<PlayerManagedComponentData> managedData, Entity entity)

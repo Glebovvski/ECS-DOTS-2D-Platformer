@@ -19,11 +19,14 @@ public partial class PlayerCameraSystem : SystemBase
 
     protected override void OnUpdate()
     {
-        if (cinemachineCamera != null)
+        if (cinemachineCamera == null)
+            cinemachineCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineCamera>();
+
+        if (cinemachineCamera.Follow != null)
             return;
 
-        cinemachineCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineCamera>();
         var playerTransform = playerQuery.GetSingleton<PlayerManagedComponentData>();
+        cinemachineCamera.transform.position = new Vector3(playerTransform.Transform.Value.position.x, playerTransform.Transform.Value.position.y, cinemachineCamera.transform.position.z);
         cinemachineCamera.Follow = playerTransform.Transform;
     }
 

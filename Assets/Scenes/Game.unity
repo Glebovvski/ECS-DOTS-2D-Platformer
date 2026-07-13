@@ -194,59 +194,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 62745554}
   m_CullTransparentMesh: 1
---- !u!1 &81310760
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 81310762}
-  - component: {fileID: 81310761}
-  m_Layer: 0
-  m_Name: GameECS
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &81310761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81310760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a335734b1572644a6a5d09d87adc65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Scenes::Unity.Scenes.SubScene
-  _SceneAsset: {fileID: 102900000, guid: a44d9cdc31644794bbc81f1aa1a79d90, type: 3}
-  _HierarchyColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  AutoLoadScene: 1
-  _SceneGUID:
-    Value:
-      x: 3452556362
-      y: 1232356883
-      z: 2716961979
-      w: 165247514
---- !u!4 &81310762
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81310760}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &157583261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1344,7 +1291,6 @@ GameObject:
   - component: {fileID: 1425111499}
   - component: {fileID: 1425111498}
   - component: {fileID: 1425111497}
-  - component: {fileID: 1425111501}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1437,41 +1383,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1425111501
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425111496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8fcd20a21b28940bc919cfc2f097ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameOverController
-  container: {fileID: 1216329286}
-  text: {fileID: 1425320476}
-  winGameLocalizationKey:
-    m_TableReference:
-      m_TableCollectionName: GUID:bba99929c73d9bf42ba1c56e6fff6acf
-    m_TableEntryReference:
-      m_KeyId: 90328772608
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  loseGameLocalizationKey:
-    m_TableReference:
-      m_TableCollectionName: GUID:bba99929c73d9bf42ba1c56e6fff6acf
-    m_TableEntryReference:
-      m_KeyId: 104870424576
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &1425320474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,6 +1520,87 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425320474}
   m_CullTransparentMesh: 1
+--- !u!1 &1537143917
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1537143919}
+  - component: {fileID: 1537143918}
+  m_Layer: 0
+  m_Name: LevelReferences
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1537143918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537143917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0951a76d4842a0e429c8c563be2c93e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelReferences
+  sceneReferences:
+  - Id:
+      GlobalId:
+        SceneObjectIdentifier0: 102900000
+        SceneObjectIdentifier1: 0
+        AssetGUID:
+          Value:
+            x: 3452556362
+            y: 1232356883
+            z: 2716961979
+            w: 165247514
+        IdentifierType: 1
+      GenerationType: 4
+  - Id:
+      GlobalId:
+        SceneObjectIdentifier0: 102900000
+        SceneObjectIdentifier1: 0
+        AssetGUID:
+          Value:
+            x: 306316030
+            y: 1335344352
+            z: 3724069519
+            w: 2713461462
+        IdentifierType: 1
+      GenerationType: 4
+  - Id:
+      GlobalId:
+        SceneObjectIdentifier0: 102900000
+        SceneObjectIdentifier1: 0
+        AssetGUID:
+          Value:
+            x: 4048972327
+            y: 1204146618
+            z: 4152047514
+            w: 2323081819
+        IdentifierType: 1
+      GenerationType: 4
+--- !u!4 &1537143919
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537143917}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.25971, y: 4.75715, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1576748376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1697,6 +1689,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NextLevelWindowController
   container: {fileID: 1576748376}
+  nextLevelBtn: {fileID: 267877717}
 --- !u!1 &2077499046
 GameObject:
   m_ObjectHideFlags: 0
@@ -1891,7 +1884,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2126833561
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1926,6 +1919,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameOverController
   container: {fileID: 1216329286}
   text: {fileID: 1425320476}
+  gameOverBtn: {fileID: 157583263}
   winGameLocalizationKey:
     m_TableReference:
       m_TableCollectionName: GUID:bba99929c73d9bf42ba1c56e6fff6acf
@@ -1953,6 +1947,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 953100637}
   - {fileID: 1425111500}
-  - {fileID: 81310762}
   - {fileID: 527480117}
   - {fileID: 919908375}
+  - {fileID: 1537143919}
