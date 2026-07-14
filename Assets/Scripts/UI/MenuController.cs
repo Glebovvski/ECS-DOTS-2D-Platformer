@@ -1,4 +1,5 @@
 using System;
+using Unity.Entities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,6 +9,13 @@ public class MenuController : MonoBehaviour
     [Header("References")]
     [SerializeField] private Button startGameBtn;
     [SerializeField] private Button quitGameBtn;
+
+    private LevelSystem levelSystem;
+
+    private void Awake()
+    {
+        levelSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<LevelSystem>();
+    }
 
     private void OnEnable()
     {   
@@ -22,7 +30,7 @@ public class MenuController : MonoBehaviour
 
     private void OnStartGameBtnClick()
     {
-        SceneManager.LoadScene((int)SceneType.Game);
+        levelSystem.LoadScene(SceneType.Game, LoadSceneMode.Additive);
     }
 
     private void OnDisable()

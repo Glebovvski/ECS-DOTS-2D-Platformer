@@ -51,7 +51,7 @@ public class GameOverWindowController : MonoBehaviour
         }
         yield return null;
         container.SetActive(false);
-        SceneManager.LoadScene((int)SceneType.Menu);
+        levelSystem.LoadScene(SceneType.Menu, LoadSceneMode.Additive);
     }
 
     private void OnGameOver(bool isPlayerDead)

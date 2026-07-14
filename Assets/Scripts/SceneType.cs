@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum SceneType
 {
-    Menu = 0,
-    Game = 1,
+    Main = 0,
+    Menu = 1,
+    Game = 2,
 }
