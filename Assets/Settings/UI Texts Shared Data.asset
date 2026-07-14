@@ -39,6 +39,10 @@ MonoBehaviour:
     m_Key: quit_game
     m_Metadata:
       m_Items: []
+  - m_Id: 1906123854819328
+    m_Key: loading
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using Unity.Entities;
 using Unity.Scenes;
@@ -8,6 +9,8 @@ using UnityEngine.SceneManagement;
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 public partial class LevelSystem : SystemBase
 {
+    public const int AnimationTime = 1000;
+
     public event Action LastLevelCompleted;
     public event Action LevelLoaded;
     public event Action NextLevel;
@@ -17,14 +20,16 @@ public partial class LevelSystem : SystemBase
     private int currentLevelIndex;
     //private Scene persistentScene;
 
-    public void LoadScene(SceneType sceneType, LoadSceneMode mode)
+    public async void LoadScene(SceneType sceneType, LoadSceneMode mode)
     {
         Debug.LogError($"Scene Type {sceneType}");
+        await LoadingScreen(true);
         if (currentScene != SceneType.Main)
-            SceneManager.UnloadSceneAsync((int)currentScene);
+            await SceneManager.UnloadSceneAsync((int)currentScene);
 
-        SceneManager.LoadSceneAsync((int) sceneType, mode);
+        await SceneManager.LoadSceneAsync((int) sceneType, mode);
         currentScene = sceneType;
+        await LoadingScreen(false);
     }
 
     protected override void OnCreate()
@@ -42,7 +47,7 @@ public partial class LevelSystem : SystemBase
 
         currentLevelIndex = 0;
         currentEntityScene = Entity.Null;
-        LoadNextLevel();
+        LoadNextLevel(false);
     }
 
     protected override void OnUpdate()
@@ -56,7 +61,7 @@ public partial class LevelSystem : SystemBase
         nextLevelData.ValueRW.IsInvoked = true;
     }
 
-    public void LoadNextLevel()
+    public async void LoadNextLevel(bool isLoadingScreen = true)
     {
         var entitySceneReferenceDynamicBuffer = SystemAPI.GetSingletonBuffer<EntitySceneReferenceBufferElementData>();
         if (currentLevelIndex > entitySceneReferenceDynamicBuffer.Length - 1)
@@ -65,29 +70,51 @@ public partial class LevelSystem : SystemBase
             return;
         }
 
-        UnloadPreviousLevel();
-        LoadNextSubScene();
+        if (isLoadingScreen)
+            await LoadingScreen(true);
+
+        await UnloadPreviousLevel();
+        await LoadNextSubScene();
+
+        if (isLoadingScreen)
+            await LoadingScreen(false);
     }
 
-    private void LoadNextSubScene()
+    private async UniTask LoadingScreen(bool isEnabled)
+    {
+        if (isEnabled)
+            await SceneManager.LoadSceneAsync((int)SceneType.LoadingScreen, LoadSceneMode.Additive);
+
+        await UniTask.Delay(AnimationTime);
+
+        if (!isEnabled)
+            await SceneManager.UnloadSceneAsync((int)SceneType.LoadingScreen);
+    }
+
+    private async UniTask LoadNextSubScene()
     {
         Debug.LogError("LOAD SUB SCENE");
         var entitySceneReferenceDynamicBuffer = SystemAPI.GetSingletonBuffer<EntitySceneReferenceBufferElementData>();
         currentEntityScene = SceneSystem.LoadSceneAsync(World.DefaultGameObjectInjectionWorld.Unmanaged, entitySceneReferenceDynamicBuffer[currentLevelIndex++].EntitySceneReference);
+
+        while (!SceneSystem.IsSceneLoaded(World.DefaultGameObjectInjectionWorld.Unmanaged, currentEntityScene))
+            await UniTask.Yield();
+
         LevelLoaded?.Invoke();
     }
 
-    public void UnloadPreviousLevel()
+    public async UniTask UnloadPreviousLevel()
     {
-        Debug.LogError("UNLOAD CALL");
         if (Entity.Null.Equals(currentEntityScene))
             return;
 
         Debug.LogError("UNLOAD SUB SCENE");
-        //World.EntityManager.CompleteAllTrackedJobs();
-        //SceneManager.SetActiveScene(persistentScene);
         SceneSystem.UnloadScene(World.DefaultGameObjectInjectionWorld.Unmanaged, currentEntityScene);
-        
+
+        while (SceneSystem.IsSceneLoaded(World.DefaultGameObjectInjectionWorld.Unmanaged, currentEntityScene))
+            await UniTask.Yield();
+
+        await UniTask.WaitForEndOfFrame();
     }
 
     public bool IsCurrentSceneUnloaded()

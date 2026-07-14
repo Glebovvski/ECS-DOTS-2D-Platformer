@@ -37,21 +37,20 @@ public class GameOverWindowController : MonoBehaviour
         gameOverBtn.onClick.AddListener(OnGameOverBtnClicked);
     }
 
-    private void OnGameOverBtnClicked()
+    private async void OnGameOverBtnClicked()
     {
-        StartCoroutine(UnloadSceneRoutine());
+        await levelSystem.UnloadPreviousLevel();
+        container.SetActive(false);
+        levelSystem.LoadScene(SceneType.Menu, LoadSceneMode.Additive);
     }
 
     private IEnumerator UnloadSceneRoutine()
     {
-        levelSystem.UnloadPreviousLevel();
         while(levelSystem.IsCurrentSceneUnloaded() == false)
         {
             yield return null;
         }
         yield return null;
-        container.SetActive(false);
-        levelSystem.LoadScene(SceneType.Menu, LoadSceneMode.Additive);
     }
 
     private void OnGameOver(bool isPlayerDead)
