@@ -43,6 +43,10 @@ MonoBehaviour:
     m_Key: loading
     m_Metadata:
       m_Items: []
+  - m_Id: 2575693892530176
+    m_Key: points
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -46,6 +46,10 @@ MonoBehaviour:
     m_Localized: Loading Screen
     m_Metadata:
       m_Items: []
+  - m_Id: 2575693892530176
+    m_Localized: 'Points:'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

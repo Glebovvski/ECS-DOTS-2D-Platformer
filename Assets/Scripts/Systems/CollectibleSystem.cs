@@ -38,15 +38,20 @@ partial struct CollectibleSystem : ISystem
     [BurstCompile]
     private void HandleCollectible(ref SystemState state, NativeArray<Entity> collectedCollectibles, int index, ref BlobArray<CollectibleContainer> collectibleDataArray)
     {
-        var sceneCollectibleComponentData = SystemAPI.GetComponent<SceneCollectibleComponentData>(collectedCollectibles[index]);
+        var entity = collectedCollectibles[index];
+        var sceneCollectibleComponentData = SystemAPI.GetComponent<SceneCollectibleComponentData>(entity);
 
         for(int i = 0; i< collectibleDataArray.Length; i++)
         {
             var collectibleContainer = collectibleDataArray[i];
             if(collectibleContainer.CollectibleType == sceneCollectibleComponentData.Type)
             {
-                Debug.LogError($"Points {collectibleContainer.Points}");
-                state.EntityManager.DestroyEntity(collectedCollectibles[index]);
+                state.EntityManager.DestroyEntity(entity);
+                var pointsEntity = state.EntityManager.CreateEntity();
+                state.EntityManager.AddComponentData(pointsEntity, new PointsComponentData()
+                {
+                    Points = collectibleContainer.Points
+                });
                 break;
             }
         }
