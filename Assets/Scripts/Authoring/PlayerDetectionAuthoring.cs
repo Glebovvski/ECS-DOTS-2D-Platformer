@@ -7,6 +7,8 @@ using UnityEngine;
 public class PlayerDetectionAuthoring : MonoBehaviour
 {
     [SerializeField] private float3 overlapDetectionOffset = new float3(0f, -0.5f, 0f);
+    [SerializeField] private PhysicsCategoryTags collectiblesBelongsTo;
+    [SerializeField] private PhysicsCategoryTags collectiblesCollidesWith;
     [SerializeField] private PhysicsCategoryTags deadZoneBelongsTo;
     [SerializeField] private PhysicsCategoryTags deadZoneCollidesWith;
     [SerializeField] private PhysicsCategoryTags groundBelongsTo;
@@ -32,6 +34,12 @@ public class PlayerDetectionAuthoring : MonoBehaviour
         BelongsTo = endFlagBelongsTo.Value,
         CollidesWith = endFlagCollidesWith.Value,
     };
+
+    public CollisionFilter CollectiblesCollisionFilter => new()
+    {
+        BelongsTo = collectiblesBelongsTo.Value,
+        CollidesWith = collectiblesCollidesWith.Value,
+    };
 }
 
 public class PlayerDetectionBaker : Baker<PlayerDetectionAuthoring>
@@ -44,7 +52,8 @@ public class PlayerDetectionBaker : Baker<PlayerDetectionAuthoring>
             OverlapDetectionOffset = authoring.OverlapDetectionOffset,
             DeadZoneCollisionFilter = authoring.DeadZoneCollisionFilter,
             GroundCollisionFilter = authoring.GroundCollisionFilter,
-            EndFlagCollisionFilter = authoring.EndFlagCollisionFilter
+            EndFlagCollisionFilter = authoring.EndFlagCollisionFilter,
+            CollectibleCollisionFilter = authoring.CollectiblesCollisionFilter
         });
     }
 }

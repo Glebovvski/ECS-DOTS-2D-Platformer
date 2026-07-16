@@ -1,3 +1,4 @@
+using System;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -7,12 +8,13 @@ using Unity.Transforms;
 using UnityEngine;
 
 [BurstCompile]
-[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+[UpdateInGroup(typeof(FixedStepSimulationSystemGroup), OrderLast = true)]
 public partial struct PlayerDetectionSystem : ISystem, ISystemStartStop
 {
     private float3 overlapDetectionOffset;
     private CollisionFilter deadZoneCollisionFilter;
     private CollisionFilter endFlagCollisionFilter;
+    private CollisionFilter collectiblesCollisionFilter;
     private CollisionFilter groundCollisionFilter;
 
     [BurstCompile]
@@ -42,7 +44,8 @@ public partial struct PlayerDetectionSystem : ISystem, ISystemStartStop
             OverlapDetectionOffset = overlapDetectionOffset,
             DeadZoneCollisionFilter = deadZoneCollisionFilter,
             GroundCollisionFilter = groundCollisionFilter,
-            EndFlagCollisionFilter = endFlagCollisionFilter
+            EndFlagCollisionFilter = endFlagCollisionFilter,
+            CollectibleCollisionFilter = collectiblesCollisionFilter,
         }.Schedule();
     }
 
@@ -60,6 +63,7 @@ public partial struct PlayerDetectionSystem : ISystem, ISystemStartStop
         deadZoneCollisionFilter = playerGroundData.DeadZoneCollisionFilter;
         groundCollisionFilter = playerGroundData.GroundCollisionFilter;
         endFlagCollisionFilter = playerGroundData.EndFlagCollisionFilter;
+        collectiblesCollisionFilter = playerGroundData.CollectibleCollisionFilter;
     }
 
     [BurstCompile]
@@ -85,6 +89,7 @@ public partial struct PlayerDetectionJob : IJobEntity
     public CollisionFilter DeadZoneCollisionFilter;
     public CollisionFilter GroundCollisionFilter;
     public CollisionFilter EndFlagCollisionFilter;
+    public CollisionFilter CollectibleCollisionFilter;
 
     [BurstCompile]
     public unsafe void Execute(ref PlayerMovementComponentData movementData, ref PlayerComponentData playerComponentData, in PhysicsCollider physicsCollider, in LocalTransform playerTransform)
@@ -98,10 +103,30 @@ public partial struct PlayerDetectionJob : IJobEntity
         if (isDead)
             return;
 
-        bool isGrounded = CheckBox(playerTransform, boxGeometry, GroundCollisionFilter);
-        movementData.IsGrounded = isGrounded;
+        HandleCollectibleCollisionDetection(playerTransform, boxGeometry);
+        HandleGroundCollisionDetection(ref movementData, playerTransform, boxGeometry);
+        HandleEndFlagCollisionDetection(playerTransform, boxGeometry);
+    }
 
+    [BurstCompile]
+    private void HandleCollectibleCollisionDetection(LocalTransform playerTransform, BoxGeometry boxGeometry)
+    {
+        NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.TempJob);
+        bool isCollectible = OverlapBox(playerTransform, boxGeometry, ref hits, CollectibleCollisionFilter);
+        if (isCollectible)
+        {
+            foreach (var hit in hits)
+            {
+                Ecb.AddComponent(hit.Entity, new CollectedCollectibleComponentData());
+            }
+        }
 
+        hits.Dispose();
+    }
+
+    [BurstCompile]
+    private unsafe void HandleEndFlagCollisionDetection(LocalTransform playerTransform, BoxGeometry boxGeometry)
+    {
         NativeList<DistanceHit> hits = new NativeList<DistanceHit>(Allocator.TempJob);
 
         bool isEndFlag = OverlapBox(playerTransform, boxGeometry, ref hits, EndFlagCollisionFilter);
@@ -109,6 +134,13 @@ public partial struct PlayerDetectionJob : IJobEntity
             Ecb.AddComponent(hits[0].Entity, new NextLevelComponentData());
 
         hits.Dispose();
+    }
+
+    [BurstCompile]
+    private void HandleGroundCollisionDetection(ref PlayerMovementComponentData movementData, LocalTransform playerTransform, BoxGeometry boxGeometry)
+    {
+        bool isGrounded = CheckBox(playerTransform, boxGeometry, GroundCollisionFilter);
+        movementData.IsGrounded = isGrounded;
     }
 
     [BurstCompile]
