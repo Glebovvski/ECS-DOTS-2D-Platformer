@@ -21,10 +21,12 @@ public partial struct PlayerMovementSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        new PlayerMovementJob()
+        var jobHandle = new PlayerMovementJob()
         {
             Ecb = GetEntityCommandBuffer(ref state)
-        }.Schedule();
+        }.Schedule(state.Dependency);
+
+        jobHandle.Complete();
     }
 
     [BurstCompile]
